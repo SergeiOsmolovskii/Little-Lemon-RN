@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useFonts } from 'expo-font';
 
 import { StyleSheet } from 'react-native';
 import { Header } from './components/Header';
@@ -19,7 +20,17 @@ const navigate = (name, params) => {
   navigationRef.current?.navigate(name, params);
 };
 
+
+
 export default function App() {
+  
+  const [fontsLoaded] = useFonts({
+    'MarkaziText-Medium': require('./assets/fonts/MarkaziText-Medium.ttf'),
+    'MarkaziText-Regular': require('./assets/fonts/MarkaziText-Regular.ttf'),
+    'Karla-Medium': require('./assets/fonts/Karla-Medium.ttf'),
+    'Karla-ExtraBold': require('./assets/fonts/Karla-ExtraBold.ttf'),
+    
+  });
 
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +67,10 @@ export default function App() {
       }
     }
   }, [isLoading, isOnboardingCompleted]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return isLoading ? (
     <SplashScreen />
