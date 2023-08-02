@@ -3,9 +3,7 @@ import { StyleSheet, View, ScrollView, Text, Image, Pressable, TextInput } from 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AvatarContainer } from '../components/AvatarContainer';
 import { useNavigation } from '@react-navigation/native';
-
 import Checkbox from 'expo-checkbox';
-
 
 export const ProfileScreen = () => {
   const navigator = useNavigation();
@@ -77,8 +75,9 @@ export const ProfileScreen = () => {
   const saveChanges = async () => {
     try {
       await AsyncStorage.setItem('profileData', JSON.stringify(profileData));
+      alert('Your data has been successfully saved');
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View , TextInput, Text, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Banner } from '../components/Banner';
+import { isEmailValid } from '../utils';
 export const OnboardingScreen = ({navigation}) => {
 
   const [userNname, onChangeUserName] = useState('');
@@ -9,6 +10,11 @@ export const OnboardingScreen = ({navigation}) => {
 
   const createProfile = async () => {
     try {
+
+      if (!isEmailValid(email)) {
+        alert('Please enter a valid email address');
+        return;
+      }
       const data = {
         userFirstName: userNname,
         userLastName: '',
@@ -32,31 +38,36 @@ export const OnboardingScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Let us get to know you</Text>
-      <Text style={styles.inputName}>First Name</Text>
-      <TextInput
-        cursorColor={'#495E57'}
-        style={styles.input}
-        value={userNname}
-        onChangeText={onChangeUserName}
-      />
 
-      <Text style={styles.inputName}>Email</Text>
-      <TextInput
-        value={email}
-        onChangeText={onChangeEmail}
-        keyboardType={'email-address'}
-        cursorColor={'#495E57'}
-        style={styles.input}
-      />
-      <View style={styles.buttonContainer}>
-        <Pressable
-          onPress={() => createProfile()}
-          disabled={ !userNname || !email}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Next</Text>
-        </Pressable>
+      <Banner />
+
+      <View style={styles.form}>
+
+        <Text style={styles.inputName}>First Name*</Text>
+        <TextInput
+          cursorColor={'#495E57'}
+          style={styles.input}
+          value={userNname}
+          onChangeText={onChangeUserName}
+        />
+
+        <Text style={styles.inputName}>Email*</Text>
+        <TextInput
+          value={email}
+          onChangeText={onChangeEmail}
+          keyboardType={'email-address'}
+          cursorColor={'#495E57'}
+          style={styles.input}
+        />
+        <View style={styles.buttonContainer}>
+          <Pressable
+            onPress={() => createProfile()}
+            disabled={!userNname || !email}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Next</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -65,30 +76,33 @@ export const OnboardingScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    paddingVertical: 50,
-    paddingHorizontal: 30,
-    backgroundColor: '#cbd2d9',
+    backgroundColor: '#495E57',
     alignItems: 'center',
     justifyContent: 'center'
   },
+  form: {
+    width: '100%',
+    paddingVertical: 50,
+    paddingHorizontal: 30,
+  },
   text: {
     paddingBottom: 100,
-    color: '#495E57',
+    color: '#F4CE14',
     fontSize: 32,
   },
   input: {
     width: '100%',
     padding: 10,
     marginBottom: 30,
+    color: '#F4CE14',
     borderWidth: 2,
     fontSize: 32,
-    borderColor: '#495E57',
+    borderColor: '#F4CE14',
     borderRadius: 10
   },
   inputName: {
     marginBottom:10,
-    color: '#495E57',
+    color: '#F4CE14',
     fontSize: 32
   },
   buttonContainer: {
@@ -100,9 +114,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 5,
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#F4CE14',
   },
   buttonText: {
     fontSize: 32,
-    color: '#495E57',
+    color: '#F4CE14',
   }
 });
