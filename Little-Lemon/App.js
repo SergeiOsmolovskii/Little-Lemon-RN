@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useFonts } from 'expo-font';
-
-import { StyleSheet } from 'react-native';
 import { Header } from './components/Header';
 import { OnboardingScreen } from './screens/Onboarding';
 import { HomeScreen } from './screens/Home';
 import { ProfileScreen } from './screens/Profile';
 import { SplashScreen } from './screens/SplashScreen';
 import { ProfileIcon } from './components/ProfileIcon';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const Stack = createNativeStackNavigator();
 const navigationRef = React.createRef();
@@ -20,10 +23,8 @@ const navigate = (name, params) => {
   navigationRef.current?.navigate(name, params);
 };
 
-
-
 export default function App() {
-  
+
   const [fontsLoaded] = useFonts({
     'MarkaziText-Medium': require('./assets/fonts/MarkaziText-Medium.ttf'),
     'MarkaziText-Regular': require('./assets/fonts/MarkaziText-Regular.ttf'),
@@ -42,8 +43,9 @@ export default function App() {
         const storage = await AsyncStorage.getItem('isOnboardingCompleted');
         const profileData = await AsyncStorage.getItem('profileData');
         const data = JSON.parse(profileData);
-        // setProfileImage(data.avatarURI)
-        // await AsyncStorage.clear()
+        if (data.avatarURI) {
+          setProfileImage(data.avatarURI);
+        }
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
@@ -53,7 +55,6 @@ export default function App() {
       }
     })();
   }, []);
-  
 
   useEffect(() => {
     if (!isLoading) {
@@ -64,6 +65,7 @@ export default function App() {
       }
     }
   }, [isLoading, isOnboardingCompleted]);
+
 
   const updateProfileImage = (imageURL) => {
     setProfileImage(imageURL);
@@ -83,10 +85,7 @@ export default function App() {
           headerTitleAlign: 'center',
         }}
       >
-        <Stack.Screen
-          name="Onboarding"
-          component={OnboardingScreen}
-        />
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -105,6 +104,7 @@ export default function App() {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
+          initialParams={{'updateProfileImage': updateProfileImage}}
           options={({ navigation }) => ({
             headerLeft: () => (
               <Icon
@@ -119,17 +119,8 @@ export default function App() {
             ),
             headerBackVisible: false
           })}
-
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: '#fff',
-    // alignItems: 'center',
-  },
-});

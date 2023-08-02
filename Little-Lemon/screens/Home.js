@@ -13,7 +13,6 @@ export const HomeScreen = () => {
   const [query, setQuery] = useState('');
   const categories = ['starters', 'mains', 'desserts', 'sides'];
   const [filterSelections, setFilterSelections] = useState(categories.map(() => false));
-
   useEffect(() => {
     (async () => {
       try {

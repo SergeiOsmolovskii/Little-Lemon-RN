@@ -17,7 +17,7 @@ export const Checkbox = (props) => {
 const styles = StyleSheet.create({
   checkboxBase: {
     backgroundColor: '#EDEFEE',
-    padding: 10,
+    padding: 5,
     borderRadius: 8
   },
   text: {
@@ -27,6 +27,5 @@ const styles = StyleSheet.create({
   },
   checkboxChecked: {
     backgroundColor: '#F4CE14',
-
   },
 })

@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text, Image, Pressable, TextInput } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Pressable, TextInput, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AvatarContainer } from '../components/AvatarContainer';
 import { useNavigation } from '@react-navigation/native';
 import Checkbox from 'expo-checkbox';
+import { isEmailValid } from '../utils';
 
-export const ProfileScreen = () => {
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
+
+export const ProfileScreen = ({ route, navigation }) => {
   const navigator = useNavigation();
   const userNotifications = {
     orderStatus: true,
@@ -23,13 +28,6 @@ export const ProfileScreen = () => {
     notifications: userNotifications
   });
 
-  const handleSetImage = async (imageURL) => {
-    setProfileData((prevProfileData) => ({
-      ...prevProfileData,
-      avatarURI: imageURL,
-    }));
-  };
-
   useEffect(() => {
     (async () => {
       try {
@@ -43,14 +41,22 @@ export const ProfileScreen = () => {
     })();
   }, []);
 
-  const handleTextChange = (field, text) => {
+  const handleSetImage = async (imageURL) => {
+    setProfileData((prevProfileData) => ({
+      ...prevProfileData,
+      avatarURI: imageURL,
+    }));
+  };
+
+
+  const updateProfileField = (field, text) => {
     setProfileData((prevProfileData) => ({
       ...prevProfileData,
       [field]: text,
     }));
   };
 
-  const handleCheckboxChange = (checkboxKey) => {
+  const updateNotificationCheckbox = (checkboxKey) => {
     setProfileData((prevProfileData) => ({
       ...prevProfileData,
       notifications: {
@@ -61,7 +67,6 @@ export const ProfileScreen = () => {
   };
 
   const clearAll = async () => {
-
     try {
       const profileData = await AsyncStorage.getItem('profileData');
       if (profileData) {
@@ -74,16 +79,24 @@ export const ProfileScreen = () => {
 
   const saveChanges = async () => {
     try {
+
+      if (!isEmailValid(profileData.userEmail)) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
       await AsyncStorage.setItem('profileData', JSON.stringify(profileData));
       alert('Your data has been successfully saved');
+      route.params.updateProfileImage(profileData.avatarURI);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const logOut = async () => {
     try {
       await AsyncStorage.clear();
+      route.params.updateProfileImage(null);
       navigator.reset({
         index: 0,
         routes: [{ name: 'Onboarding' }],
@@ -100,7 +113,7 @@ export const ProfileScreen = () => {
         <View >
           <Text style={styles.subtitle}>Avatar</Text>
 
-          <AvatarContainer onImageSet={handleSetImage} />
+          <AvatarContainer onImageSet={handleSetImage}/>
 
           <View>
             <Text style={styles.subtitle}>First name</Text>
@@ -108,7 +121,7 @@ export const ProfileScreen = () => {
               cursorColor={'#495E57'}
               style={styles.input}
               value={profileData.userFirstName}
-              onChangeText={(text) => handleTextChange('userFirstName', text)}
+              onChangeText={(text) => updateProfileField('userFirstName', text)}
             />
 
             <Text style={styles.subtitle}>Last name</Text>
@@ -116,7 +129,7 @@ export const ProfileScreen = () => {
               cursorColor={'#495E57'}
               style={styles.input}
               value={profileData.userLastName}
-              onChangeText={(text) => handleTextChange('userLastName', text)}
+              onChangeText={(text) => updateProfileField('userLastName', text)}
             />
 
             <Text style={styles.subtitle}>Email</Text>
@@ -125,7 +138,7 @@ export const ProfileScreen = () => {
               style={styles.input}
               value={profileData.userEmail}
               keyboardType='email-address'
-              onChangeText={(text) => handleTextChange('userEmail', text)}
+              onChangeText={(text) => updateProfileField('userEmail', text)}
             />
 
             <Text style={styles.subtitle}>Phone number</Text>
@@ -134,7 +147,7 @@ export const ProfileScreen = () => {
               style={styles.input}
               value={profileData.userPhone}
               keyboardType='number-pad'
-              onChangeText={(text) => handleTextChange('userPhone', text)}
+              onChangeText={(text) => updateProfileField('userPhone', text)}
             />
           </View>
 
@@ -145,7 +158,7 @@ export const ProfileScreen = () => {
               style={styles.checkbox}
               color={'#495E57'}
               value={profileData.notifications.orderStatus}
-              onValueChange={() => handleCheckboxChange('orderStatus')}
+              onValueChange={() => updateNotificationCheckbox('orderStatus')}
             />
             <Text style={styles.checkboxText}>Order status</Text>
           </View>
@@ -155,7 +168,7 @@ export const ProfileScreen = () => {
               style={styles.checkbox}
               color={'#495E57'}
               value={profileData.notifications.passwordChange}
-              onValueChange={() => handleCheckboxChange('passwordChange')}
+              onValueChange={() => updateNotificationCheckbox('passwordChange')}
             />
             <Text style={styles.checkboxText}>Password change</Text>
           </View>
@@ -165,7 +178,7 @@ export const ProfileScreen = () => {
               style={styles.checkbox}
               color={'#495E57'}
               value={profileData.notifications.specialsOffers}
-              onValueChange={() => handleCheckboxChange('specialsOffers')}
+              onValueChange={() => updateNotificationCheckbox('specialsOffers')}
             />
             <Text style={styles.checkboxText}>Specials offers</Text>
           </View>
@@ -175,7 +188,7 @@ export const ProfileScreen = () => {
               style={styles.checkbox}
               color={'#495E57'}
               value={profileData.notifications.newsletters}
-              onValueChange={() => handleCheckboxChange('newsletters')}
+              onValueChange={() => updateNotificationCheckbox('newsletters')}
             />
             <Text style={styles.checkboxText}>Newsletters</Text>
           </View>
@@ -202,20 +215,21 @@ export const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
     backgroundColor: '#fff',
   },
   profileContainer: {
     height: '100%',
     width: '100%',
-    padding: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderWidth: 1,
     borderColor: '#cbd2d9',
     borderRadius: 20
   },
   title: {
     textAlign: 'left',
-    marginBottom: 20,
+    marginBottom: 10,
     fontSize: 18,
     fontWeight: 'bold'
   },
@@ -254,9 +268,9 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    paddingVertical: 5,
+    paddingVertical: 3,
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 5,
     borderWidth: 2,
     borderColor: '#cbd2d9',
     borderRadius: 10,
@@ -303,6 +317,6 @@ const styles = StyleSheet.create({
   changesButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginBottom: 20
+    marginBottom: 10
   }
 });

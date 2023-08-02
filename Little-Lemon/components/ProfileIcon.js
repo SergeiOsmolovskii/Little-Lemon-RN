@@ -3,10 +3,10 @@ import { StyleSheet, Image, Text, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-export const ProfileIcon = (props) => {
+export const ProfileIcon = ({ size, fontSize, profileImage, onImageSet }) => {
+
   const navigation = useNavigation();
   const [initials, setInitials] = useState(null);
-
   useEffect(() => {
     (async () => {
       try {
@@ -25,11 +25,11 @@ export const ProfileIcon = (props) => {
 
   return (
 
-    <Pressable style={styles.icon} height={props.size} width={props.size} onPress={() => navigation.navigate('Profile')}>
-      {props.profileImage ? (
-        <Image source={{ uri: props.profileImage }} height={props.size} width={props.size} borderRadius={50} resizeMode='contain' accessible={true} accessibilityLabel={'Profile'} />
+    <Pressable style={styles.icon} height={size} width={size} onPress={() => navigation.navigate('Profile')}>
+      {profileImage ? (
+        <Image source={{ uri: profileImage }} height={size} width={size} borderRadius={50} resizeMode='contain' accessible={true} accessibilityLabel={'Profile'} />
       ) : (
-        <Text style={{ ...styles.text, fontSize: props.fontSize }}>{initials}</Text>
+        <Text style={{ ...styles.text, fontSize: fontSize }}>{initials}</Text>
       )}
     </Pressable>
   )

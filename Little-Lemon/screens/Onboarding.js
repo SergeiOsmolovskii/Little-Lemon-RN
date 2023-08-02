@@ -45,7 +45,7 @@ export const OnboardingScreen = ({navigation}) => {
 
         <Text style={styles.inputName}>First Name*</Text>
         <TextInput
-          cursorColor={'#495E57'}
+          cursorColor={'#F4CE14'}
           style={styles.input}
           value={userNname}
           onChangeText={onChangeUserName}
@@ -56,7 +56,7 @@ export const OnboardingScreen = ({navigation}) => {
           value={email}
           onChangeText={onChangeEmail}
           keyboardType={'email-address'}
-          cursorColor={'#495E57'}
+          cursorColor={'#F4CE14'}
           style={styles.input}
         />
         <View style={styles.buttonContainer}>
