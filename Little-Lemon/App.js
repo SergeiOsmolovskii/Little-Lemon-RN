@@ -36,10 +36,6 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(null);
 
-  const updateProfileImage = (imageURL) => {
-    setProfileImage(imageURL);
-  };
-
   useEffect(() => {
     (async () => {
       try {
@@ -57,6 +53,7 @@ export default function App() {
       }
     })();
   }, []);
+  
 
   useEffect(() => {
     if (!isLoading) {
@@ -67,6 +64,10 @@ export default function App() {
       }
     }
   }, [isLoading, isOnboardingCompleted]);
+
+  const updateProfileImage = (imageURL) => {
+    setProfileImage(imageURL);
+  };
 
   if (!fontsLoaded) {
     return null;

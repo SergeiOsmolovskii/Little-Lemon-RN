@@ -26,12 +26,10 @@ export const ProfileScreen = () => {
   });
 
   const handleSetImage = async (imageURL) => {
-    // console.log(profileData)
     setProfileData((prevProfileData) => ({
       ...prevProfileData,
       avatarURI: imageURL,
     }));
-    // console.log(profileData)
   };
 
   useEffect(() => {
@@ -102,11 +100,9 @@ export const ProfileScreen = () => {
         <Text style={styles.title}>Personal information</Text>
         <View >
           <Text style={styles.subtitle}>Avatar</Text>
-          
 
           <AvatarContainer onImageSet={handleSetImage} />
-          
-          
+
           <View>
             <Text style={styles.subtitle}>First name</Text>
             <TextInput
@@ -197,7 +193,6 @@ export const ProfileScreen = () => {
                 <Text style={styles.buttonText}>Save changes</Text>
               </Pressable>
           </View>
-
 
         </View>
       </View>

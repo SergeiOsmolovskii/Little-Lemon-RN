@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, TextInput,  Image, } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export const SearchPanel = (props) => {
+export const SearchPanel = ({query, onSearch }) => {
   const [clicked, setClicked] = useState(true);
 
   return (
@@ -17,9 +17,9 @@ export const SearchPanel = (props) => {
         />
         {(clicked ?
         <TextInput
-         style={styles.input}
-          // value={searchPhrase}
-          // onChangeText={setSearchPhrase}
+          style={styles.input}
+          value={query}
+          onChangeText={onSearch}
           // onFocus={() => {
           //   setClicked(true);
           // }}

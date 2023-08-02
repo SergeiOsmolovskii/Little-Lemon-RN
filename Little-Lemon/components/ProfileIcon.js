@@ -12,8 +12,6 @@ export const ProfileIcon = (props) => {
       try {
         const storage = await AsyncStorage.getItem('profileData');
         const data = JSON.parse(storage);
-         
-        console.log(props)
         if (data.userFirstName && data.userLastName) {
           setInitials(`${data.userFirstName[0].toUpperCase()}${data.userLastName[0].toUpperCase()}`);
         } else if (data.userFirstName) {
@@ -34,10 +32,6 @@ export const ProfileIcon = (props) => {
         <Text style={{ ...styles.text, fontSize: props.fontSize }}>{initials}</Text>
       )}
     </Pressable>
-
-    // <Pressable style={styles.icon} height={props.size} width={props.size} onPress={() => navigation.navigate('Profile')}>
-    //   <Text style={{ ...styles.text, fontSize: props.fontSize }}>{initials}</Text>
-    // </Pressable>
   )
 }
 

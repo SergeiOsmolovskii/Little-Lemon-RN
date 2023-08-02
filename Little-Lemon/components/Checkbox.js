@@ -2,23 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Pressable, Image } from 'react-native';
 
 export const Checkbox = (props) => {
-
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    setChecked(props.isChecked);
-  }, []);
+  const { title, index, isChecked, onChange } = props;
 
   return (
     <Pressable
-      style={[styles.checkboxBase, checked && styles.checkboxChecked]}
-      onPress={() => setChecked(!checked)}
+      style={[styles.checkboxBase, isChecked && styles.checkboxChecked]}
+      onPress={() => onChange(index)}
     >
-      <Text style={styles.text}>{props.title}</Text>
+      <Text style={styles.text}>{title}</Text>
     </Pressable>
   );
-
-}
+};
 
 const styles = StyleSheet.create({
   checkboxBase: {
